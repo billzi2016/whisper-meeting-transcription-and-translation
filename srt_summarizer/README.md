@@ -1,6 +1,6 @@
-# rst_summarizer
+# srt_summarizer
 
-读取上层流水线生成的中文字幕（`.zh.srt`），剥掉所有 SRT 格式，把纯文本发给本地 Ollama 做摘要，结果保存为 `.summary.txt`，和字幕文件放在同一目录。
+读取上层流水线生成的中文字幕（`.zh.srt`），剥掉所有 SRT 格式，把纯文本发给本地 Ollama 做摘要，结果保存为 `.summary.md`，和字幕文件放在同一目录。
 
 ## 依赖
 
@@ -15,7 +15,7 @@ pip install requests
 从项目根目录运行：
 
 ```bash
-python rst_summarizer/main.py
+python srt_summarizer/main.py
 ```
 
 默认读取 `subtitles/*.zh.srt`，摘要写回同目录。
@@ -42,7 +42,7 @@ python rst_summarizer/main.py
 ```
 subtitles/
   video.mp4.zh.srt       ← 输入
-  video.mp4.summary.txt  ← 输出
+  video.mp4.summary.md  ← 输出
 ```
 
-`.summary.txt` 已加入 `.gitignore`，不会提交。
+`.summary.md` 已加入 `.gitignore`，不会提交。

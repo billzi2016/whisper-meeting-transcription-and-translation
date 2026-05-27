@@ -13,14 +13,16 @@ _SUMMARIZE_PROMPT = (
     "你是专业内容摘要助手。请对以下字幕文本进行摘要，"
     "提炼核心内容、关键信息和重要观点，输出简洁清晰的中文摘要。"
     "专有名词（人名、地名、产品名、技术术语、品牌名等）和重要名词必须原样保留，不得省略或替换。"
-    "直接输出摘要内容，不需要任何前缀或解释。"
+    "输出必须使用 Markdown 格式：用 ## 标题组织结构，重点内容加粗，列表用 - 符号。"
+    "直接输出 Markdown 摘要内容，不需要任何前缀或解释。"
 )
 
 _MERGE_PROMPT = (
     "你是专业内容摘要助手。以下是同一内容多个片段的分段摘要，"
     "请将它们整合为一篇连贯、完整的最终摘要。"
     "专有名词（人名、地名、产品名、技术术语、品牌名等）和重要名词必须原样保留，不得省略或替换。"
-    "直接输出最终摘要，不需要任何前缀或解释。"
+    "输出必须使用 Markdown 格式：用 ## 标题组织结构，重点内容加粗，列表用 - 符号。"
+    "直接输出 Markdown 最终摘要，不需要任何前缀或解释。"
 )
 
 
@@ -113,7 +115,7 @@ def main() -> None:
     print(f"找到 {len(candidates)} 个字幕文件\n")
 
     for stem, srt_path in sorted(candidates.items()):
-        out_path = args.output / f"{stem}.summary.txt"
+        out_path = args.output / f"{stem}.summary.md"
 
         print(f"处理: {srt_path.name}")
         text = strip_srt(srt_path)

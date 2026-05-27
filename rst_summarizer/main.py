@@ -83,7 +83,7 @@ def summarize(text: str, ollama_url: str, model: str, chunk_size: int, out_path:
 
 def main() -> None:
     p = argparse.ArgumentParser(description="SRT 中文字幕摘要生成器")
-    p.add_argument("--input", type=Path, default=Path("subtitles"), metavar="DIR")
+    p.add_argument("--input", type=Path, default=Path("../subtitles"), metavar="DIR")
     p.add_argument("--output", type=Path, default=None, metavar="DIR",
                    help="输出目录，默认与 --input 相同")
     p.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL, metavar="URL")

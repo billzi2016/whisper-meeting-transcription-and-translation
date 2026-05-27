@@ -3,6 +3,8 @@ subtitles/
 *.srt
 *.vtt
 *.ass
+*.summary.txt
+chunks/
 
 __pycache__/
 *.pyc

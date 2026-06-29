@@ -50,6 +50,7 @@ def transcribe_file(
     file_path: Path,
     output_dir: Path,
     model_name: str = DEFAULT_MODEL,
+    language: str | None = None,
     force: bool = False,
 ) -> dict | None:
     import mlx_whisper
@@ -63,6 +64,7 @@ def transcribe_file(
         result = mlx_whisper.transcribe(
             str(file_path),
             path_or_hf_repo=model_name,
+            language=language,
             verbose=False,
         )
     except Exception as e:

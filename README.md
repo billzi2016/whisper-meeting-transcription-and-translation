@@ -39,11 +39,30 @@ media/lecture.mp4   →   subtitles/lecture.mp4.srt
                     →   subtitles/lecture.mp4.zh.srt  （非中文时）
 ```
 
+## Quickstart
+
+默认情况下，Whisper 会自动识别语言：
+
+```bash
+python main.py
+```
+
+如果自动识别不准，可以强制指定语言：
+
+```bash
+python main.py --language zh   # 强制按中文转录
+python main.py --language en   # 强制按英文转录
+```
+
+更多示例见 [QUICKSTART.md](QUICKSTART.md)。
+
 ### 常用选项
 
 ```bash
 python main.py --force               # 强制重新处理已有字幕
 python main.py --no-translate        # 只转录，不翻译
+python main.py --language zh         # 强制按中文转录
+python main.py --language en         # 强制按英文转录
 python main.py --input ./my_videos   # 指定媒体文件夹
 python main.py --output ./subs       # 指定输出文件夹
 python main.py --whisper-model mlx-community/whisper-large-v3-mlx
@@ -60,6 +79,7 @@ python main.py --ollama-url http://localhost:11434
 | `--force` | false | 强制覆盖已有字幕 |
 | `--no-translate` | false | 只转录，跳过翻译 |
 | `--whisper-model` | `mlx-community/whisper-large-v3-mlx` | MLX Whisper 模型 |
+| `--language` | 自动识别 | 强制指定转录语言，支持 `zh` / `en` |
 | `--ollama-model` | `gpt-oss:120b` | Ollama 翻译模型 |
 | `--ollama-url` | `http://localhost:11434` | Ollama 服务地址 |
 

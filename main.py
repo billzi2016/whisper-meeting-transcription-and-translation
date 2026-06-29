@@ -19,6 +19,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true", help="强制重新处理已有字幕")
     p.add_argument("--no-translate", action="store_true", help="只转录，不翻译")
     p.add_argument("--whisper-model", default=DEFAULT_WHISPER_MODEL, metavar="MODEL")
+    p.add_argument("--language", choices=["zh", "en"], help="强制指定转录语言")
     p.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL, metavar="URL")
     p.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, metavar="MODEL")
     return p
@@ -65,6 +66,7 @@ def main() -> None:
             file_path,
             output_dir=args.output,
             model_name=args.whisper_model,
+            language=args.language,
             force=args.force,
         )
 

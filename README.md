@@ -1,6 +1,6 @@
-# Whisper 字幕生成工具
+# Whisper 会议转录和翻译
 
-本地音视频字幕生成 + 中文翻译。基于 [mlx-whisper](https://github.com/ml-explore/mlx-examples) 在 Apple Silicon 上做 MLX 加速转录，通过本地 [Ollama](https://ollama.com) 运行 `gpt-oss:120b` 完成翻译，全程离线。
+本地音视频字幕生成 + 中英文翻译。基于 [mlx-whisper](https://github.com/ml-explore/mlx-examples) 在 Apple Silicon 上做 MLX 加速转录，通过本地 [Ollama](https://ollama.com) 运行 `gpt-oss:120b` 完成翻译，全程离线。
 
 ## 环境要求
 
@@ -35,19 +35,19 @@ python main.py
 字幕输出到 `subtitles/` 文件夹，命名规则保留原扩展名：
 
 ```
-media/lecture.mp4   →   subtitles/lecture.mp4.srt
-                    →   subtitles/lecture.mp4.zh.srt  （非中文时）
+media/lecture.mp4   →   subtitles/lecture.mp4.zh.srt
+                    →   subtitles/lecture.mp4.en.srt
 ```
 
 ## Quickstart
 
-默认情况下，Whisper 会自动识别语言：
+默认情况下，Whisper 会自动识别语言，只生成对应语言的字幕文件：
 
 ```bash
 python main.py
 ```
 
-如果自动识别不准，可以强制指定语言：
+如果自动识别不准，可以强制指定视频语言：
 
 ```bash
 python main.py --language zh   # 强制按中文转录
@@ -63,6 +63,8 @@ python main.py --force               # 强制重新处理已有字幕
 python main.py --no-translate        # 只转录，不翻译
 python main.py --language zh         # 强制按中文转录
 python main.py --language en         # 强制按英文转录
+python main.py --target-language zh  # 翻译成中文
+python main.py --target-language en  # 翻译成英文
 python main.py --input ./my_videos   # 指定媒体文件夹
 python main.py --output ./subs       # 指定输出文件夹
 python main.py --whisper-model mlx-community/whisper-large-v3-mlx
@@ -80,8 +82,35 @@ python main.py --ollama-url http://localhost:11434
 | `--no-translate` | false | 只转录，跳过翻译 |
 | `--whisper-model` | `mlx-community/whisper-large-v3-mlx` | MLX Whisper 模型 |
 | `--language` | 自动识别 | 强制指定转录语言，支持 `zh` / `en` |
+| `--target-language` | 不翻译 | 指定翻译目标语言，支持 `zh` / `en` |
 | `--ollama-model` | `gpt-oss:120b` | Ollama 翻译模型 |
 | `--ollama-url` | `http://localhost:11434` | Ollama 服务地址 |
+
+### 常见组合
+
+中 -> 中，只生成中文字幕：
+
+```bash
+python main.py --language zh
+```
+
+中 -> 英，生成中文字幕和英文翻译字幕：
+
+```bash
+python main.py --language zh --target-language en
+```
+
+英 -> 中，生成英文字幕和中文字幕：
+
+```bash
+python main.py --language en --target-language zh
+```
+
+英 -> 英，只生成英文字幕：
+
+```bash
+python main.py --language en
+```
 
 ## 支持格式
 

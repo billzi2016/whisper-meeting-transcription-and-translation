@@ -9,21 +9,33 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_MODEL = "gpt-oss:120b"
 BATCH_SIZE = 20
 
-_SYSTEM_PROMPT = (
-    "你是专业字幕翻译员。将用户提供的字幕文本翻译为简体中文。"
-    "输入格式为「序号: 文本」，输出格式完全相同，每行一条，不添加任何解释或额外内容。"
-    "译文简洁自然，符合字幕阅读习惯。"
-)
+_TARGET_LANGUAGE_LABELS = {
+    "zh": "简体中文",
+    "en": "英文",
+}
 
 
-def _translate_batch(texts: list[str], ollama_url: str, model: str) -> list[str]:
+def _build_system_prompt(target_language: str) -> str:
+    return (
+        f"你是专业字幕翻译员。将用户提供的字幕文本翻译为{_TARGET_LANGUAGE_LABELS[target_language]}。"
+        "输入格式为「序号: 文本」，输出格式完全相同，每行一条，不添加任何解释或额外内容。"
+        "译文简洁自然，符合字幕阅读习惯。"
+    )
+
+
+def _translate_batch(
+    texts: list[str],
+    ollama_url: str,
+    model: str,
+    target_language: str,
+) -> list[str]:
     numbered = "\n".join(f"{i + 1}: {t}" for i, t in enumerate(texts))
     resp = requests.post(
         f"{ollama_url}/api/chat",
         json={
             "model": model,
             "messages": [
-                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "system", "content": _build_system_prompt(target_language)},
                 {"role": "user", "content": numbered},
             ],
             "stream": False,
@@ -51,6 +63,7 @@ def _translate_batch(texts: list[str], ollama_url: str, model: str) -> list[str]
 def translate_srt(
     srt_path: Path,
     output_path: Path,
+    target_language: str,
     ollama_url: str = DEFAULT_OLLAMA_URL,
     model: str = DEFAULT_MODEL,
 ) -> bool:
@@ -64,7 +77,7 @@ def translate_srt(
     for batch in tqdm(batches, desc="  Translating", unit="batch", leave=False):
         texts = [e["text"] for e in batch]
         try:
-            translated = _translate_batch(texts, ollama_url, model)
+            translated = _translate_batch(texts, ollama_url, model, target_language)
         except Exception as e:
             tqdm.write(f"  [WARN] batch failed ({e}), keeping original")
             translated = texts

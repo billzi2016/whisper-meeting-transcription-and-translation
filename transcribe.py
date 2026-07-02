@@ -55,11 +55,6 @@ def transcribe_file(
 ) -> dict | None:
     import mlx_whisper
 
-    srt_path = output_dir / (file_path.name + ".srt")
-
-    if srt_path.exists() and not force:
-        return {"srt_path": srt_path, "language": None, "skipped": True}
-
     try:
         result = mlx_whisper.transcribe(
             str(file_path),
@@ -73,10 +68,14 @@ def transcribe_file(
 
     segments = result.get("segments", [])
     language = result.get("language", "")
+    srt_path = output_dir / f"{file_path.name}.{language}.srt"
 
     if not segments:
         tqdm.write("  [WARN] No speech detected")
         return None
+
+    if srt_path.exists() and not force:
+        return {"srt_path": srt_path, "language": language, "skipped": True}
 
     save_srt(segments, srt_path)
     return {"srt_path": srt_path, "language": language, "skipped": False}

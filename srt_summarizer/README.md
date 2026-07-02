@@ -1,48 +1,103 @@
 # srt_summarizer
 
-读取上层流水线生成的中文字幕（`.zh.srt`），剥掉所有 SRT 格式，把纯文本发给本地 Ollama 做摘要，结果保存为 `.summary.md`，和字幕文件放在同一目录。
+[中文版](README.cn.md)
 
-## 依赖
+This tool reads subtitle files produced by the main pipeline:
 
-```
+- `*.zh.srt` -> Chinese summary
+- `*.en.srt` -> English summary
+
+It strips SRT formatting, sends plain text to local Ollama, and writes the summary back as a language-specific `.summary.md` file.
+
+## Dependencies
+
+```bash
 pip install requests
+pip install tiktoken
 ```
 
-需要本地运行 Ollama，且已拉取 `gpt-oss:120b` 模型。
+You also need a local Ollama service with `gpt-oss:120b` already pulled.
 
-## 用法
+## Quickstart
 
-从项目根目录运行：
+Run from the project root:
 
 ```bash
 python srt_summarizer/main.py
 ```
 
-默认读取 `subtitles/*.zh.srt`，摘要写回同目录。
+By default it reads `subtitles/*.zh.srt` and `subtitles/*.en.srt`, then generates:
 
-### 参数
-
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--input` | `subtitles/` | `.zh.srt` 所在目录 |
-| `--output` | 同 `--input` | 摘要输出目录 |
-| `--ollama-url` | `http://localhost:11434` | Ollama 地址 |
-| `--model` | `gpt-oss:120b` | 使用的模型 |
-| `--chunk-size` | `80000` | 每块最大字符数 |
-
-## 分块策略
-
-模型上下文窗口 256k token，单个中文字符约 1-2 token。  
-默认每块 **8 万字符**（约 8-16 万 token），留足 prompt 和回复空间。
-
-超过一块时：先逐块摘要，再合并成最终摘要。
-
-## 输出
-
+```text
+subtitles/video.mp4.zh.summary.md
+subtitles/video.mp4.en.summary.md
 ```
+
+More examples are in [QUICKSTART.md](QUICKSTART.md).
+
+## Usage
+
+Run from the project root:
+
+```bash
+python srt_summarizer/main.py
+```
+
+By default, summaries are written back into the same directory.
+
+### Common Combinations
+
+Generate Chinese summaries from Chinese subtitles:
+
+```bash
+python srt_summarizer/main.py --input ./subtitles
+```
+
+Generate English summaries from English subtitles:
+
+```bash
+python srt_summarizer/main.py --input ./subtitles
+```
+
+Use a custom subtitle directory and output directory:
+
+```bash
+python srt_summarizer/main.py --input ./subs --output ./summaries
+```
+
+Specify model and Ollama URL:
+
+```bash
+python srt_summarizer/main.py --model gpt-oss:120b --ollama-url http://localhost:11434
+```
+
+### Parameters
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--input` | `subtitles/` | Directory containing `.zh.srt` / `.en.srt` files |
+| `--output` | same as `--input` | Summary output directory |
+| `--ollama-url` | `http://localhost:11434` | Ollama URL |
+| `--model` | `gpt-oss:120b` | Model name |
+| `--chunk-size` | `100000` | Max tokens per chunk, based on `cl100k_base` |
+
+## Chunking Strategy
+
+The model context window is 256k tokens.  
+The tool uses `tiktoken` with `cl100k_base` for exact token counting.
+
+The default chunk size is **100k tokens**, leaving room for prompts and responses.
+
+If the content exceeds one chunk, the tool summarizes each chunk first and then merges the chunk summaries into a final summary.
+
+## Output
+
+```text
 subtitles/
-  video.mp4.zh.srt       ← 输入
-  video.mp4.summary.md  ← 输出
+  video.mp4.zh.srt
+  video.mp4.zh.summary.md
+  video.mp4.en.srt
+  video.mp4.en.summary.md
 ```
 
-`.summary.md` 已加入 `.gitignore`，不会提交。
+`.summary.md` is already ignored by `.gitignore`.

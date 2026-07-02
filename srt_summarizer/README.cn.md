@@ -104,3 +104,13 @@ subtitles/
 ```
 
 `.summary.md` 已加入 `.gitignore`，不会提交。
+
+## 测试
+
+运行 `summary` 的小规模单元测试：
+
+```bash
+python3 -m unittest discover -s test -p 'test_srt_summarizer.py'
+```
+
+这组测试使用很短的输入和 mock，不会真实调用大规模摘要计算。

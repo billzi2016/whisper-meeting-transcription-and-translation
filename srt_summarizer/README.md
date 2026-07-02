@@ -101,3 +101,13 @@ subtitles/
 ```
 
 `.summary.md` is already ignored by `.gitignore`.
+
+## Testing
+
+Run the small summary unit test suite with:
+
+```bash
+python3 -m unittest discover -s test -p 'test_srt_summarizer.py'
+```
+
+These tests use very short inputs and mocks, so they do not trigger expensive real summary computation.

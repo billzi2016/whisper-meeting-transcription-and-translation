@@ -134,3 +134,13 @@ The model is downloaded from Hugging Face and cached locally on first use.
 
 - `media/` and `subtitles/` are already in `.gitignore`
 - The Docker image does not support MLX acceleration and is only intended for Ollama-related deployment work
+
+## Testing
+
+Run the small `srt_summarizer` unit test suite with:
+
+```bash
+python3 -m unittest discover -s test -p 'test_srt_summarizer.py'
+```
+
+These tests use very short inputs and mocks, so they do not trigger expensive real summary computation.

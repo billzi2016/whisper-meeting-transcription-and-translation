@@ -134,3 +134,13 @@ python main.py --language en
 
 - `media/` 和 `subtitles/` 已加入 `.gitignore`，不会进入版本控制（版权保护）
 - Docker 镜像不支持 MLX 加速，仅用于 Ollama 服务部署，详见 [Dockerfile](Dockerfile)
+
+## 测试
+
+运行 `srt_summarizer` 的小规模单元测试：
+
+```bash
+python3 -m unittest discover -s test -p 'test_srt_summarizer.py'
+```
+
+这组测试使用很短的输入和 mock，不会真实调用大规模摘要计算。
